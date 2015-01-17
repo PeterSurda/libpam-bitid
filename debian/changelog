@@ -1,6 +1,14 @@
+libpam-bitid (0.2.1) UNRELEASED; urgency=low
+
+  * Added port range
+  * 
+
+ -- Peter Surda <surda@economicsofbitcoin.com>  Sat, 17 Jan 2015 14:18:00 +0100
+
 libpam-bitid (0.2.0) UNRELEASED; urgency=low
 
   * Added QR code and HTTP callback
+  * 
 
  -- Peter Surda <surda@economicsofbitcoin.com>  Thu, 15 Jan 2015 15:47:00 +0100
 

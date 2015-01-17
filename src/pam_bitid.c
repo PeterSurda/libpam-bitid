@@ -328,7 +328,7 @@ static int
 pam_bitcoin_qr(pam_handle_t *pamh, int flags)
 {
 	char *username = NULL;
-	struct MHD_Daemon *d;
+	struct MHD_Daemon *d = NULL;
 	time_t deadline = time(NULL);
 	struct response *resp;
 	deadline += 60; // FIXME get from param
@@ -340,6 +340,22 @@ pam_bitcoin_qr(pam_handle_t *pamh, int flags)
     		retval = PAM_SERVICE_ERR;
 		goto end;
   	}
+
+	auth.termresp.gotresponse = auth.httpresp.gotresponse = 0;
+
+	auth.port = auth.port_lo;
+	while (d == NULL && auth.port <= auth.port_hi) {
+		d = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, auth.port, NULL, NULL, &bitid_callback, NULL,
+			MHD_OPTION_PER_IP_CONNECTION_LIMIT, 2,
+			MHD_OPTION_CONNECTION_TIMEOUT, 60,
+			MHD_OPTION_NOTIFY_COMPLETED, &http_connection_closed, NULL,
+			MHD_OPTION_END);
+		if (d == NULL)
+			auth.port ++;
+	}
+	if (d == NULL) {
+		pam_syslog(pamh, LOG_ERR, "Cannot create http daemon. Terminal based authentication only.");
+	}
 
 	auth.challengeuri = builduri((char *) auth.hostname, auth.port, auth.challenge, BITID);
 	if (auth.challengeuri == NULL) {
@@ -357,16 +373,6 @@ pam_bitcoin_qr(pam_handle_t *pamh, int flags)
 
 	ansi_write(pamh, auth.qrcode, ANSI_TYPE);
 
-	auth.termresp.gotresponse = auth.httpresp.gotresponse = 0;
-
-	d = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, auth.port, NULL, NULL, &bitid_callback, NULL,
-		MHD_OPTION_PER_IP_CONNECTION_LIMIT, 2,
-		MHD_OPTION_CONNECTION_TIMEOUT, 60,
-		MHD_OPTION_NOTIFY_COMPLETED, &http_connection_closed, NULL,
-		MHD_OPTION_END);
-	if (d == NULL) {
-		pam_syslog(pamh, LOG_ERR, "Cannot create http daemon. Terminal based authentication only.");
-	}
 	if (auth.httpresp.gotresponse == 0)
 		auth.termresp.address = bitid_prompt(pamh, BTC_ADDR);
 	if (auth.httpresp.gotresponse == 0)
@@ -464,7 +470,7 @@ pam_bitcoin(pam_handle_t *pamh, int flags, int argc, const char **argv)
 {
   	int retval;
 
-	auth.port = 12356;
+	auth.port = auth.port_lo = auth.port_hi = 12356;
 
   	/* use filename for bitcoin username lookup. */
 
@@ -473,9 +479,15 @@ pam_bitcoin(pam_handle_t *pamh, int flags, int argc, const char **argv)
 			auth.file = (5 + *argv);
       		else if (!strncmp (*argv, "qr=", 3))
 			auth.doqr = atoi (3 + *argv);
-      		else if (!strncmp (*argv, "port=", 5))
-			auth.port = atoi (5 + *argv);
-      		else if (!strncmp (*argv, "hostname=", 9))
+      		else if (!strncmp (*argv, "port=", 5)) {
+			retval = sscanf(5 + *argv, "%d-%d", &auth.port_lo, &auth.port_hi);
+			if (retval != 2)
+				auth.port = auth.port_lo = auth.port_hi = atoi (5 + *argv);
+			if (auth.port_lo <= 0 || auth.port_lo > auth.port_hi)
+				auth.port_lo = 1024;
+			if (auth.port_hi >= 65535 || auth.port_lo > auth.port_hi)
+				auth.port_hi = 65535;
+      		} else if (!strncmp (*argv, "hostname=", 9))
 			auth.hostname = (9 + *argv);
   	}
 

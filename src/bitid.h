@@ -20,6 +20,8 @@ struct authstruct {
 	QRcode *qrcode;
 	int doqr;
 	int port;
+	int port_lo;
+	int port_hi;
 	const char *hostname;
 };
 

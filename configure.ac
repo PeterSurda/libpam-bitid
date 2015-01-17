@@ -1,4 +1,4 @@
-AC_INIT([libpam-bitid], [0.2.0])
+AC_INIT([libpam-bitid], [0.2.1])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
