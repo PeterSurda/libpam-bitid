@@ -55,14 +55,14 @@ int bitid_callback(void * cls,
 	int ret;
 
 	if (*con_cls == NULL) {
-		fprintf (stderr, "Connection init\n");
+		//fprintf (stderr, "Connection init\n");
 		struct connection_info_struct *con_info;
 		if (0 != strcmp(method, MHD_HTTP_METHOD_GET) && 0 != strcmp(method, MHD_HTTP_METHOD_POST)) {
-			fprintf (stderr, "Unsupported method %s\n", method);
+			//fprintf (stderr, "Unsupported method %s\n", method);
 			return MHD_NO; /* unexpected method */
 		}
 		if ((con_info = init_coninfo()) == NULL) {
-			fprintf (stderr, "init_coninfo failed\n");
+			//fprintf (stderr, "init_coninfo failed\n");
 			return MHD_NO;
 		}
 		
@@ -72,28 +72,28 @@ int bitid_callback(void * cls,
 			con_info->length = atoi(lenstr);
 			if (con_info->length >= POSTBUFFERSIZE) {
 				free(con_info);
-				fprintf (stderr, "Too long post\n");
+				//fprintf (stderr, "Too long post\n");
 				return (MHD_NO);
 			}
-			fprintf (stderr, "Creating data buffer\n");
+			//fprintf (stderr, "Creating data buffer\n");
 			con_info->data = calloc (con_info->length, sizeof(char));
 			if (!con_info->data) {
 				free(con_info);
-				fprintf (stderr, "Failed to allocate memory\n");
+				//fprintf (stderr, "Failed to allocate memory\n");
 				return (MHD_NO);
 			}
-			fprintf (stderr, "Created data buffer\n");
+			//fprintf (stderr, "Created data buffer\n");
 		}
 		*con_cls = (void *)con_info;
 		return (MHD_YES);
 	} 
 	if (!strcmp (method, MHD_HTTP_METHOD_POST)) {
-		fprintf (stderr, "Processing post chunk of %ib\n", (int) *upload_data_size);
+		//fprintf (stderr, "Processing post chunk of %ib\n", (int) *upload_data_size);
 		struct connection_info_struct *con_info = (struct connection_info_struct *)*con_cls;
 		if (*upload_data_size != 0) {
 			if (*upload_data_size + con_info->offset >= POSTBUFFERSIZE || *upload_data_size + con_info->offset > con_info->length) {
 				// TODO free stuff
-				fprintf (stderr, "Too much data (%i at %i of %i)\n", (int) *upload_data_size, con_info->offset, con_info->length);
+				//fprintf (stderr, "Too much data (%i at %i of %i)\n", (int) *upload_data_size, con_info->offset, con_info->length);
 				return MHD_NO;
 			}
 			memcpy(con_info->data + con_info->offset, upload_data, (size_t) *upload_data_size);
