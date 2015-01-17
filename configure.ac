@@ -1,4 +1,4 @@
-AC_INIT([libpam-bitid], [0.1.0])
+AC_INIT([libpam-bitid], [0.2.0])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
@@ -25,6 +25,30 @@ have_pam=no
 AC_CHECK_LIB(pam, pam_getenv, have_pam=yes)
 if test "x$have_pam" = "xno"; then
   AC_MSG_ERROR([Required library PAM was not found])
+fi
+
+have_crypto=no
+AC_CHECK_LIB[crypto, SHA256_Init, have_crypto=yes)
+if test "x$have_crypto" = "xno"; then
+  AC_MSG_ERROR([Required library crypto was not found. This is often a part of openssl library.])
+fi
+
+have_microhttpd=no
+AC_CHECK_LIB(microhttpd, MHD_start_daemon, have_microhttpd=yes)
+if test "x$have_microhttpd" = "xno"; then
+  AC_MSG_ERROR([Required library microhttpd was not found.])
+fi
+
+have_png=no
+AC_CHECK_LIB(png, png_create_write_struct, have_png=yes)
+if test "x$have_png" = "xno"; then
+  AC_MSG_ERROR([Required library png was not found.])
+fi
+
+have_qrencode=no
+AC_CHECK_LIB(qrencode, QRcode_encodeString, have_qrencode=yes)
+if test "x$have_qrencode" = "xno"; then
+  AC_MSG_ERROR([Required library qrencode was not found.])
 fi
 
 # Local Install
