@@ -11,10 +11,9 @@ Build-Depends: debhelper (>= 9),
                libmicrohttpd-dev,
                libpng-dev,
                libjson-c-dev
-
 Standards-Version: 3.9.4
-Homepage: https://github.com/angrycod/libpam-bitid.git
-Vcs-Git: https://github.com/angrycod/libpam-bitid.git
+Homepage: https://github.com/PeterSurda/libpam-bitid.git
+Vcs-Git: https://github.com/PeterSurda/libpam-bitid.git
 
 Package: libpam-bitid
 Architecture: any

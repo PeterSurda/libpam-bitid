@@ -2,10 +2,11 @@ libpam-bitid (0.2.0) UNRELEASED; urgency=low
 
   * Added QR code and HTTP callback
 
- -- Peter Surda <surda@economicsofbitcoin.com>  Thu, 15 Jan 2015 15:47 +0100
+ -- Peter Surda <surda@economicsofbitcoin.com>  Thu, 15 Jan 2015 15:47:00 +0100
 
 libpam-bitid (0.1.0) UNRELEASED; urgency=low
 
   * Initial release. 
 
  -- Jay Schulist <jayschulist@agentorange>  Wed, 21 May 2014 22:44:37 -0700
+
