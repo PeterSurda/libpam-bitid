@@ -6,6 +6,12 @@ Build-Depends: debhelper (>= 9),
                dh-autoreconf,
                libpam0g-dev,
                pkg-config,
+               pkg-config,
+               libqrencode-dev,
+               libmicrohttpd-dev,
+               libpng-dev,
+               libjson-c-dev
+
 Standards-Version: 3.9.4
 Homepage: https://github.com/angrycod/libpam-bitid.git
 Vcs-Git: https://github.com/angrycod/libpam-bitid.git

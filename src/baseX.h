@@ -47,4 +47,8 @@ unsigned char *b58_encode(unsigned char *in, int inLen, int *outLen);
  * returns: base256 encoded character array of length outLen
  */
 unsigned char *b58_decode(unsigned char *in, int inLen, int *outLen);
+
+/* base58 so we don't want 0OIl characters. */
+int base58_check(char *data, int len);
+
 #endif /* BASEX_H_ */

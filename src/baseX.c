@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <openssl/bn.h>
+#include <errno.h>
 
 #include "baseX.h"
 
@@ -383,3 +384,23 @@ b58_decode(unsigned char *input, int inLen, int *outLen)
 
 	return out;
 }
+
+/* base58 so we don't want 0OIl characters. */
+int
+base58_check(char *data, int len)
+{
+	const char base58[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+	int base58_len = strlen(base58);
+	int i, j;
+
+  	for (i=0; i < len; i++) { // check all base58 for a match
+		for (j=0; j < base58_len; j++) {
+			if (data[i] == base58[j])
+          			break;
+    		}
+    		if (j == base58_len)  // no match found character not base58
+			return -EINVAL;
+	}
+	return 0;
+}
+
